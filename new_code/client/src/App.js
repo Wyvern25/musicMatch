@@ -112,8 +112,8 @@ class App extends Component {
     let inputs = event.target.children;
 
     let username = inputs[0].value;
-    let password = inputs[1].value;
-    let passwordConf = inputs[2].value;
+    let password = inputs[2].value;
+    let passwordConf = inputs[4].value;
 
     if (password === passwordConf) {
 
@@ -135,7 +135,8 @@ class App extends Component {
     let inputs = event.target.children;
 
     let username = inputs[0].value;
-    let password = inputs[1].value;
+    let password = inputs[2].value;
+
 
     return _login(username, password).then(res => {
       if (res.token) {
@@ -187,12 +188,16 @@ class App extends Component {
     return (
       <div className="App">
         <header>
-          <img src={logo} className="App-logo" alt="logo" />
+          {/* <img src={logo} className="App-logo" alt="logo" />
           <p>
             Edit <code>src/App.js</code> and save to reload. {this.state.edit_id}
-          </p>
+          </p> */}
 
           <h1>{this.state.name}</h1>
+
+          {this.state.logged_in && this.state.pets.map((x) => <Pet _id={x._id} name={x.name} type={x.type} delete={this.deletePet} edit={this.editPet} />)}
+
+          {!this.state.logged_in && this.state.pets.map((x) => <ShortPet _id={x._id} name={x.name} type={x.type} />)}
 
           {!this.state.logged_in &&
             <div>
@@ -210,9 +215,11 @@ class App extends Component {
 
                   <form id="signUpForm" onSubmit={this.signUp}>
                     <input type="text" name="username" placeholder="put in a username" />
+                    <br></br>
                     <input type="password" name="password" placeholder="put in a password" />
+                    <br></br>
                     <input type="password" name="password" placeholder="confirm your password" />
-
+                    <br></br>
                     <button>Confirm</button>
                   </form>
                   <br></br>
@@ -259,13 +266,10 @@ class App extends Component {
 
           {this.state.logged_in && <Form func={this.createPet} submitButton="make pet" />}
 
-          {(this.state.edit_id !== "") && <Form cssId="editForm" func={this.updatePet} submitButton="update pet" />}
+          {(this.state.edit_id !== "") && this.state.logged_in && <Form cssId="editForm" func={this.updatePet} submitButton="update pet" />}
 
-          {(this.state.edit_id !== "") && <a href="#" onClick={this.hideEditForm}>hide edit form</a>}
+          {(this.state.edit_id !== "") && this.state.logged_in && <a href="#" onClick={this.hideEditForm}>hide edit form</a>}
 
-          {this.state.logged_in && this.state.pets.map((x) => <Pet _id={x._id} name={x.name} type={x.type} delete={this.deletePet} edit={this.editPet} />)}
-
-          {!this.state.logged_in && this.state.pets.map((x) => <ShortPet _id={x._id} name={x.name} type={x.type} />)}
 
 
           <a
