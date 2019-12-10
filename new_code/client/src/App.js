@@ -7,9 +7,13 @@ import Pet from './components/Pet';
 import ShortPet from './components/ShortPet';
 import Form from './components/Form';
 
+// 11-13 Axios calls to retrieve lyrics
+import ReactDOM from 'react-dom';
+import axios from 'axios';
+
 class App extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
       pets: [{ _id: 1, name: 'fido' }, { _id: 2, name: 'snowflake' }],
@@ -18,6 +22,8 @@ class App extends Component {
       logged_in: false,
       show_sign_up: false,
       show_log_in: false,
+      isLoaded: false,
+      items: [],
       countup: 0,
       //imgColors: ['blue'['green', 'red', 'orange'], 'black'['white', 'grey']],
       purpleRain: "I never meant to cause you any sorrow I never meant to cause you any pain I only wanted to one time to see you laughing I only wanted to see you Laughing in the purple rain Purple rain, purple rain Purple rain, purple rain Purple rain, purple rain I only wanted to see you Bathing in the purple rain I never wanted to be your weekend lover I only wanted to be some kind of friend Baby, I could never steal you from another It's such a shame our friendship had to end Purple rain, purple rain Purple rain, purple rain Purple rain, purple rain I only wanted to see you Underneath the purple rain Honey, I know, I know I know times are changing It's time we all reach out For something new, that means you too You say you want a…",
@@ -89,6 +95,49 @@ class App extends Component {
       let dummyData = [...this.state.dummyData, this.state.dummyData[0]];
       this.setState({ pets, dummyData })
     })
+  }
+
+
+  componentDidMount() {
+
+    return fetch('https://audd.p.rapidapi.com/findLyrics/?q=drake%20nonstop', {
+      method: 'GET',
+      headers: {
+        "x-rapidapi-host": "audd.p.rapidapi.com",
+        "x-rapidapi-key": "b17b8cd89emsh36c1258254b71eap1c8f0djsn38fb874b095d"
+      }
+    }).then((response) => response.json()
+    ).then((responseJson) => {
+
+      var lyrics = responseJson.result[0].lyrics
+
+      var wordSplitter = lyrics.split("\n");
+      lyricToGif(wordSplitter)
+      console.log(responseJson.result[0].lyrics)
+      
+      this.setState({
+        isLoading: true,
+        items: wordSplitter,
+      });
+    })
+      .catch((error) => {
+        console.error(error);
+      })
+
+      function lyricToGif(wordSplitter) {
+
+        // var url =
+        //   "https://api.giphy.com/v1/gifs/search?api_key=fqydCqSaHCiqVBtd38IfSjDm4vi4vSsI&q=" +
+        //   wordSplitter[4] +
+        //   "&limit=25&offset=0&rating=PG-13&lang=en";
+
+          var url = "https://api.giphy.com/v1/gifs/search?api_key=fqydCqSaHCiqVBtd38IfSjDm4vi4vSsI&q=nice&limit=1&offset=0&rating=PG-13&lang=en"
+    
+        return fetch(url, { method: 'GET' }).then(async function (data) {
+          console.log(data.data[0])
+        })
+      }
+
   }
 
   updatePet = (event) => {
